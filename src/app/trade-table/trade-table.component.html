@@ -1,12 +1,12 @@
 @if (isLoading()) {
-  <div class="loading-spinner">
+  <div class="trades-table__loading">
     <mat-spinner diameter="50"></mat-spinner>
   </div>
 } @else {
   <table class="trades-table">
     <thead class="trades-table__head">
       <tr class="trades-table__row trades-table__row--head">
-        <th class="trades-table__cell trades-table__cell--symbol">Symbol</th>
+        <th class="trades-table__cell">Symbol</th>
         <th class="trades-table__cell">Order ID</th>
         <th class="trades-table__cell">Side</th>
         <th class="trades-table__cell">Size</th>
@@ -21,34 +21,42 @@
     <tbody class="trades-table__body">
       @for (group of groupedTrades(); track group.symbol) {
         <tr class="trades-table__row trades-table__row--group" (click)="toggle(group.symbol)">
-          <td class="trades-table__cell trades-table__cell--symbol">
+          <td class="trades-table__cell trades-table__cell--symbol" data-label="Symbol">
             <mat-icon
               class="trades-table__chevron"
               [class.trades-table__chevron--open]="isExpanded(group.symbol)"
-              >keyboard_arrow_down</mat-icon
             >
+              keyboard_arrow_down
+            </mat-icon>
             {{ group.symbol }}
             <span class="trades-table__badge">{{ group.count }}</span>
           </td>
-          <td class="trades-table__cell"></td>
-          <td class="trades-table__cell"></td>
-          <td class="trades-table__cell">{{ group.totalSize }}</td>
-          <td class="trades-table__cell"></td>
-          <td class="trades-table__cell">{{ group.avgOpenPrice | number: '1.5-5' }}</td>
-          <td class="trades-table__cell">{{ group.totalSwap }}</td>
+
+          <td class="trades-table__cell" data-label="Order ID"></td>
+          <td class="trades-table__cell" data-label="Side"></td>
+          <td class="trades-table__cell" data-label="Size">
+            {{ group.totalSize }}
+          </td>
+          <td class="trades-table__cell" data-label="Open Time"></td>
+          <td class="trades-table__cell" data-label="Open Price">
+            {{ group.avgOpenPrice | number: '1.5-5' }}
+          </td>
+          <td class="trades-table__cell" data-label="Swap">
+            {{ group.totalSwap }}
+          </td>
           <td
             class="trades-table__cell trades-table__cell--right"
+            data-label="Profit"
             [class.trades-table__cell--profit]="group.totalProfit > 0"
             [class.trades-table__cell--loss]="group.totalProfit < 0"
           >
             {{ group.totalProfit | number: '1.5-5' }}
           </td>
-          <td class="trades-table__cell trades-table__cell--action">
+          <td class="trades-table__cell trades-table__cell--action" data-label="Action">
             <button
               mat-icon-button
               color="warn"
               (click)="$event.stopPropagation(); closeGroup(group)"
-              aria-label="Delete group"
             >
               <mat-icon>delete</mat-icon>
             </button>
@@ -58,22 +66,43 @@
         @if (isExpanded(group.symbol)) {
           @for (trade of group.trades; track trade.id) {
             <tr class="trades-table__row trades-table__row--trade">
-              <td class="trades-table__cell trades-table__cell--spacer"></td>
-              <td class="trades-table__cell">{{ trade.id }}</td>
-              <td class="trades-table__cell trades-table__cell--side">{{ trade.side }}</td>
-              <td class="trades-table__cell">{{ trade.size }}</td>
-              <td class="trades-table__cell">{{ trade.openTime | date: 'dd.MM.yyyy HH:mm:ss' }}</td>
-              <td class="trades-table__cell">{{ trade.openPrice }}</td>
-              <td class="trades-table__cell">{{ trade.swap }}</td>
+              <td class="trades-table__cell" data-label="Symbol"></td>
+
+              <td class="trades-table__cell" data-label="Order ID">
+                {{ trade.id }}
+              </td>
+
+              <td class="trades-table__cell" data-label="Side">
+                {{ trade.side }}
+              </td>
+
+              <td class="trades-table__cell" data-label="Size">
+                {{ trade.size }}
+              </td>
+
+              <td class="trades-table__cell" data-label="Open Time">
+                {{ trade.openTime | date: 'dd.MM.yyyy HH:mm:ss' }}
+              </td>
+
+              <td class="trades-table__cell" data-label="Open Price">
+                {{ trade.openPrice }}
+              </td>
+
+              <td class="trades-table__cell" data-label="Swap">
+                {{ trade.swap }}
+              </td>
+
               <td
                 class="trades-table__cell trades-table__cell--right"
+                data-label="Profit"
                 [class.trades-table__cell--profit]="trade.profit > 0"
                 [class.trades-table__cell--loss]="trade.profit < 0"
               >
                 {{ trade.profit | number: '1.5-5' }}
               </td>
-              <td class="trades-table__cell trades-table__cell--action">
-                <button mat-icon-button (click)="closeOrder(trade.id)" aria-label="Close order">
+
+              <td class="trades-table__cell trades-table__cell--action" data-label="Action">
+                <button mat-icon-button (click)="closeOrder(trade.id)">
                   <mat-icon>close</mat-icon>
                 </button>
               </td>
