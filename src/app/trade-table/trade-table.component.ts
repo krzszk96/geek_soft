@@ -51,7 +51,7 @@ export class TradeTableComponent {
       if (trades.length > 0) {
         untracked(() => {
           const symbols = this.tradesService.groupedBySymbol().map((g) => g.symbol);
-          this.quotesService.subscribe(symbols);
+          this.quotesService.trackQuotes(symbols);
         });
       }
     });
@@ -65,7 +65,7 @@ export class TradeTableComponent {
   closeGroup(group: TradeGroupUI): void {
     const ids = group.trades.map((trade) => trade.id).join(', ');
     this.tradesService.removeGroup(group.symbol);
-    this.quotesService.unsubscribe([group.symbol]);
+    this.quotesService.untrackQuotes([group.symbol]);
     this.showSnackBar(`Closed all orders for group: ${ids}`);
   }
 

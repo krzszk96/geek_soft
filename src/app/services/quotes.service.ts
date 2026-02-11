@@ -28,7 +28,7 @@ export class QuotesService {
     };
   }
 
-  subscribe(symbols: string[]) {
+  trackQuotes(symbols: string[]) {
     this.connect();
 
     const sendWhenOpen = () => {
@@ -48,7 +48,7 @@ export class QuotesService {
     sendWhenOpen();
   }
 
-  unsubscribe(symbols: string[]) {
+  untrackQuotes(symbols: string[]) {
     this.ws?.send(
       JSON.stringify({
         p: '/subscribe/removelist',
