@@ -1,6 +1,11 @@
 <main class="main">
   <button matFab extended (click)="toggleTheme()" class="theme-btn">
-    <mat-icon>favorite</mat-icon> Toggle Theme
+    @if (themeService.getTheme() === 'dark-theme') {
+      <mat-icon>brightness_7</mat-icon>
+    } @else {
+      <mat-icon>dark_mode</mat-icon>
+    }
+    <span>Change Theme</span>
   </button>
   <app-trade-table></app-trade-table>
 </main>

@@ -1,13 +1,25 @@
-import { Component, inject, signal, effect } from '@angular/core';
+import { Component, inject, signal, effect, untracked } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { TradesService } from '../services/trades.service';
 import { QuotesService } from '../services/quotes.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TradeGroupUI } from '../interfaces/trade-group-ui.interface';
 
 @Component({
   selector: 'app-trade-table',
   standalone: true,
-  imports: [DatePipe, DecimalPipe],
+  imports: [
+    DatePipe,
+    DecimalPipe,
+    MatIconModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './trade-table.component.html',
   styleUrl: './trade-table.component.scss',
   animations: [
@@ -24,19 +36,37 @@ import { QuotesService } from '../services/quotes.service';
   ],
 })
 export class TradeTableComponent {
-  tradesService = inject(TradesService);
-  quotesService = inject(QuotesService);
+  private tradesService = inject(TradesService);
+  private quotesService = inject(QuotesService);
+  private snackBar = inject(MatSnackBar);
 
   expanded = signal<Set<string>>(new Set());
+  readonly groupedTrades = this.tradesService.groupedBySymbol;
+  readonly isLoading = this.tradesService.isLoading;
 
   constructor() {
-    // TODO: change to untracked
     effect(() => {
-      const symbols = this.tradesService.groupedBySymbol().map((g) => g.symbol);
+      const trades = this.tradesService.trades();
 
-      this.quotesService.subscribe(symbols);
-      // this.quotesService.subscribe(['AUDCHF']);
+      if (trades.length > 0) {
+        untracked(() => {
+          const symbols = this.tradesService.groupedBySymbol().map((g) => g.symbol);
+          this.quotesService.subscribe(symbols);
+        });
+      }
     });
+  }
+
+  closeOrder(id: number): void {
+    this.tradesService.removeOrder(id);
+    this.showSnackBar(`Order ${id} closed`);
+  }
+
+  closeGroup(group: TradeGroupUI): void {
+    const ids = group.trades.map((trade) => trade.id).join(', ');
+    this.tradesService.removeGroup(group.symbol);
+    this.quotesService.unsubscribe([group.symbol]);
+    this.showSnackBar(`Closed all orders for group: ${ids}`);
   }
 
   toggle(symbol: string) {
@@ -47,5 +77,13 @@ export class TradeTableComponent {
 
   isExpanded(symbol: string) {
     return this.expanded().has(symbol);
+  }
+
+  private showSnackBar(msg: string) {
+    this.snackBar.open(msg, 'Dismiss', {
+      duration: 5000,
+      verticalPosition: 'top',
+      horizontalPosition: 'right',
+    });
   }
 }
