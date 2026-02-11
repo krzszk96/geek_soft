@@ -1,0 +1,67 @@
+<table class="trades-table">
+  <thead class="trades-table__head">
+    <tr class="trades-table__row trades-table__row--head">
+      <th class="trades-table__cell trades-table__cell--symbol">Symbol</th>
+      <th class="trades-table__cell">Order ID</th>
+      <th class="trades-table__cell">Side</th>
+      <th class="trades-table__cell">Size</th>
+      <th class="trades-table__cell">Open Time</th>
+      <th class="trades-table__cell">Open Price</th>
+      <th class="trades-table__cell">Swap</th>
+      <th class="trades-table__cell trades-table__cell--right">Profit</th>
+      <th class="trades-table__cell trades-table__cell--action"></th>
+    </tr>
+  </thead>
+
+  <tbody class="trades-table__body">
+    @for (group of tradesService.groupedBySymbol(); track group.symbol) {
+      <tr class="trades-table__row trades-table__row--group" (click)="toggle(group.symbol)">
+        <td class="trades-table__cell trades-table__cell--symbol">
+          <span
+            class="trades-table__chevron"
+            [class.trades-table__chevron--open]="isExpanded(group.symbol)"
+            >V</span
+          >
+          {{ group.symbol }}
+          <span class="trades-table__badge">{{ group.count }}</span>
+        </td>
+        <td class="trades-table__cell"></td>
+        <td class="trades-table__cell"></td>
+        <td class="trades-table__cell">{{ group.totalSize }}</td>
+        <td class="trades-table__cell"></td>
+        <td class="trades-table__cell">{{ group.avgOpenPrice | number: '1.5-5' }}</td>
+        <td class="trades-table__cell">{{ group.totalSwap }}</td>
+        <td
+          class="trades-table__cell trades-table__cell--right"
+          [class.trades-table__cell--profit]="group.totalProfit > 0"
+          [class.trades-table__cell--loss]="group.totalProfit < 0"
+        >
+          {{ group.totalProfit | number: '1.5-5' }}
+        </td>
+        <td class="trades-table__cell trades-table__cell--action">⤴</td>
+      </tr>
+
+      @if (isExpanded(group.symbol)) {
+        @for (t of group.trades; track t.id) {
+          <tr class="trades-table__row trades-table__row--trade">
+            <td class="trades-table__cell trades-table__cell--spacer"></td>
+            <td class="trades-table__cell">{{ t.id }}</td>
+            <td class="trades-table__cell trades-table__cell--side">{{ t.side }}</td>
+            <td class="trades-table__cell">{{ t.size }}</td>
+            <td class="trades-table__cell">{{ t.openTime | date: 'dd.MM.yyyy HH:mm:ss' }}</td>
+            <td class="trades-table__cell">{{ t.openPrice }}</td>
+            <td class="trades-table__cell">{{ t.swap }}</td>
+            <td
+              class="trades-table__cell trades-table__cell--right"
+              [class.trades-table__cell--profit]="t.profit > 0"
+              [class.trades-table__cell--loss]="t.profit < 0"
+            >
+              {{ t.profit | number: '1.5-5' }}
+            </td>
+            <td class="trades-table__cell trades-table__cell--action">✕</td>
+          </tr>
+        }
+      }
+    }
+  </tbody>
+</table>

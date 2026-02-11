@@ -1,12 +1,19 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { TradeTableComponent } from './trade-table/trade-table.component';
+import { ThemeService } from './services/theme.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [TradeTableComponent, MatButtonModule, MatIconModule],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
 export class App {
-  protected readonly title = signal('geek_soft');
+  themeService = inject(ThemeService);
+
+  toggleTheme() {
+    this.themeService.toggleTheme();
+  }
 }

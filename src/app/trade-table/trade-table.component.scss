@@ -1,0 +1,76 @@
+.trades-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--background-main);
+  color: var(--color-text);
+  font-size: 13px;
+  table-layout: fixed;
+
+  &__row {
+    &--head {
+      background: var(--row-background);
+      font-weight: 600;
+    }
+
+    &--group {
+      background: var(--row-background);
+      font-weight: 600;
+      cursor: pointer;
+
+      &:hover {
+        background: var(--row-hover);
+      }
+    }
+  }
+
+  &__cell {
+    padding: 8px 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+
+    &--symbol {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    &--right {
+      text-align: right;
+    }
+
+    &--action {
+      text-align: center;
+      color: var(--action-color);
+    }
+
+    &--profit {
+      color: var(--color-profit);
+    }
+
+    &--loss {
+      color: var(--color-loss);
+    }
+
+    &--spacer {
+      padding-left: 28px;
+    }
+  }
+
+  &__chevron {
+    color: var(--action-color);
+    transition: transform 0.2s ease;
+
+    &--open {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__badge {
+    background: var(--badge-color);
+    padding: 4px 11px;
+    border-radius: 15px;
+    font-size: 11px;
+  }
+}
