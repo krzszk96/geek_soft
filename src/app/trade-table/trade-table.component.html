@@ -2,8 +2,13 @@
   <div class="trades-table__loading" role="status" aria-live="polite">
     <mat-spinner diameter="50" aria-hidden="true"></mat-spinner>
     <span class="visually-hidden">Loading trades...</span>
+    @if (tradeError()) {
+      <p class="trades-table__error">{{ tradeError() }}</p>
+    }
   </div>
-} @else {
+}
+
+@if (!isLoading() && !tradeError()) {
   <table class="trades-table">
     <thead class="trades-table__head">
       <tr class="trades-table__row trades-table__row--head">

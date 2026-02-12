@@ -7,18 +7,30 @@ import { TradesApiResponse } from '../interfaces/trade-api-response.interface';
 import { Side } from '../types/side.type';
 import { TradeUI } from '../interfaces/trade-ui.interface';
 import { TradeGroupUI } from '../interfaces/trade-group-ui.interface';
+import { catchError, of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class TradesService {
   private http = inject(HttpClient);
   private quotesService = inject(QuotesService);
 
+  tradeError = signal<string | null>(null);
+
   private readonly apiUrl = 'https://geeksoft.pl/assets/order-data.json';
   private removedIds = signal<Set<number>>(new Set());
   private removedSymbols = signal<Set<string>>(new Set());
-  private readonly tradesResponse = toSignal(this.http.get<TradesApiResponse>(this.apiUrl), {
-    initialValue: null,
-  });
+  private readonly tradesResponse = toSignal(
+    this.http.get<TradesApiResponse>(this.apiUrl).pipe(
+      catchError((err) => {
+        this.tradeError.set('Failed to fetch trades');
+        console.error('Failed to fetch trades:', err);
+        return of(null);
+      }),
+    ),
+    {
+      initialValue: null,
+    },
+  );
 
   readonly isLoading = computed(() => this.tradesResponse() === null);
 

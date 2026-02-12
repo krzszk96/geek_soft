@@ -2,15 +2,11 @@
 
 This project was developed by **Krzysztof Szkudlarek**.
 
-
-
 ## 🚀 Live Demo
 
 The application is hosted on Netlify:
 
 🔗 https://geeksoft.netlify.app
-
-
 
 ## 📦 Installation
 
@@ -47,8 +43,7 @@ ng test
 - Theme switching (light / dark + system detection)
 - WCAG accessibility improvements
 - Unit tested services
-
-
+- Error handling
 
 ## 🛠 Tech Stack
 
@@ -60,8 +55,6 @@ ng test
 - SCSS
 - Netlify (hosting)
 
-
-
 ## ♿ Accessibility
 
 The application includes:
@@ -70,8 +63,6 @@ The application includes:
 - Proper ARIA attributes (`aria-expanded`, `aria-controls`)
 - Focusable interactive elements
 - Screen-reader-friendly icons and buttons
-
-
 
 ## 📄 License
 

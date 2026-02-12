@@ -1,4 +1,4 @@
-import { Component, inject, signal, effect, untracked } from '@angular/core';
+import { Component, inject, signal, effect, untracked, computed } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { TradesService } from '../services/trades.service';
@@ -43,6 +43,10 @@ export class TradeTableComponent {
   expanded = signal<Set<string>>(new Set());
   readonly groupedTrades = this.tradesService.groupedBySymbol;
   readonly isLoading = this.tradesService.isLoading;
+  readonly tradeError = this.tradesService.tradeError;
+  readonly webSocketError = this.quotesService.quoteError;
+
+  readonly combinedError = computed(() => this.tradeError() ?? this.webSocketError());
 
   constructor() {
     effect(() => {
@@ -53,6 +57,14 @@ export class TradeTableComponent {
           const symbols = this.tradesService.groupedBySymbol().map((g) => g.symbol);
           this.quotesService.trackQuotes(symbols);
         });
+      }
+    });
+
+    effect(() => {
+      const error = this.combinedError();
+
+      if (error) {
+        this.showErrorSnackBar(error);
       }
     });
   }
@@ -84,6 +96,14 @@ export class TradeTableComponent {
       duration: 5000,
       verticalPosition: 'top',
       horizontalPosition: 'right',
+    });
+  }
+
+  private showErrorSnackBar(msg: string) {
+    this.snackBar.open(`ERROR: ${msg}`, 'Dismiss', {
+      verticalPosition: 'top',
+      horizontalPosition: 'right',
+      panelClass: ['error-snackbar'],
     });
   }
 }
