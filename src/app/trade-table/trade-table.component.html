@@ -1,6 +1,7 @@
 @if (isLoading()) {
-  <div class="trades-table__loading">
-    <mat-spinner diameter="50"></mat-spinner>
+  <div class="trades-table__loading" role="status" aria-live="polite">
+    <mat-spinner diameter="50" aria-hidden="true"></mat-spinner>
+    <span class="visually-hidden">Loading trades...</span>
   </div>
 } @else {
   <table class="trades-table">
@@ -20,11 +21,21 @@
 
     <tbody class="trades-table__body">
       @for (group of groupedTrades(); track group.symbol) {
-        <tr class="trades-table__row trades-table__row--group" (click)="toggle(group.symbol)">
+        <tr
+          class="trades-table__row trades-table__row--group"
+          role="button"
+          tabindex="0"
+          (click)="toggle(group.symbol)"
+          (keydown.enter)="toggle(group.symbol)"
+          (keydown.space)="toggle(group.symbol); $event.preventDefault()"
+          [attr.aria-expanded]="isExpanded(group.symbol)"
+          [attr.aria-controls]="'group-' + group.symbol"
+        >
           <td class="trades-table__cell trades-table__cell--symbol" data-label="Symbol">
             <mat-icon
               class="trades-table__chevron"
               [class.trades-table__chevron--open]="isExpanded(group.symbol)"
+              aria-hidden="true"
             >
               keyboard_arrow_down
             </mat-icon>
@@ -55,17 +66,17 @@
           <td class="trades-table__cell trades-table__cell--action" data-label="Action">
             <button
               mat-icon-button
-              color="warn"
               (click)="$event.stopPropagation(); closeGroup(group)"
+              [attr.aria-label]="'Close group ' + group.symbol"
             >
-              <mat-icon>delete</mat-icon>
+              <mat-icon aria-hidden="true">delete</mat-icon>
             </button>
           </td>
         </tr>
 
         @if (isExpanded(group.symbol)) {
           @for (trade of group.trades; track trade.id) {
-            <tr class="trades-table__row trades-table__row--trade">
+            <tr class="trades-table__row trades-table__row--trade" [id]="'group-' + group.symbol">
               <td class="trades-table__cell" data-label="Symbol"></td>
 
               <td class="trades-table__cell" data-label="Order ID">
@@ -102,8 +113,12 @@
               </td>
 
               <td class="trades-table__cell trades-table__cell--action" data-label="Action">
-                <button mat-icon-button (click)="closeOrder(trade.id)">
-                  <mat-icon>close</mat-icon>
+                <button
+                  mat-icon-button
+                  (click)="closeOrder(trade.id)"
+                  [attr.aria-label]="'Close order ' + trade.id"
+                >
+                  <mat-icon aria-hidden="true">close</mat-icon>
                 </button>
               </td>
             </tr>
