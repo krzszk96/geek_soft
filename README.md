@@ -2,7 +2,7 @@
 
 This project was developed by **Krzysztof Szkudlarek**.
 
----
+
 
 ## 🚀 Live Demo
 
@@ -10,7 +10,7 @@ The application is hosted on Netlify:
 
 🔗 https://geeksoft.netlify.app
 
----
+
 
 ## 📦 Installation
 
@@ -48,7 +48,7 @@ ng test
 - WCAG accessibility improvements
 - Unit tested services
 
----
+
 
 ## 🛠 Tech Stack
 
@@ -60,7 +60,7 @@ ng test
 - SCSS
 - Netlify (hosting)
 
----
+
 
 ## ♿ Accessibility
 
@@ -71,7 +71,7 @@ The application includes:
 - Focusable interactive elements
 - Screen-reader-friendly icons and buttons
 
----
+
 
 ## 📄 License
 
