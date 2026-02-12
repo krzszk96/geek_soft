@@ -5,16 +5,32 @@ import { ThemeType } from '../types/theme.type';
   providedIn: 'root',
 })
 export class ThemeService {
+  private mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  private storageKey = 'app-theme';
   private currentTheme: ThemeType = 'dark-theme';
 
   constructor() {
-    this.setTheme(this.currentTheme);
+    const savedTheme = localStorage.getItem(this.storageKey) as ThemeType | null;
+
+    if (savedTheme) {
+      this.currentTheme = savedTheme;
+    } else {
+      this.currentTheme = this.mediaQuery.matches ? 'dark-theme' : 'light-theme';
+    }
+
+    this.applyTheme();
+
+    this.mediaQuery.addEventListener('change', (event) => {
+      if (!localStorage.getItem(this.storageKey)) {
+        this.setTheme(event.matches ? 'dark-theme' : 'light-theme');
+      }
+    });
   }
 
   setTheme(theme: ThemeType) {
-    document.body.classList.remove('light-theme', 'dark-theme');
-    document.body.classList.add(theme);
     this.currentTheme = theme;
+    localStorage.setItem(this.storageKey, theme);
+    this.applyTheme();
   }
 
   toggleTheme() {
@@ -23,5 +39,10 @@ export class ThemeService {
 
   getTheme() {
     return this.currentTheme;
+  }
+
+  private applyTheme() {
+    document.body.classList.remove('light-theme', 'dark-theme');
+    document.body.classList.add(this.currentTheme);
   }
 }
